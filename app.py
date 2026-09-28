@@ -8,12 +8,87 @@ st.set_page_config(
     page_icon="🚨"
 )
 
+# --- UI Effects: Thinking Orb & Chromatic Metal FX ---
+st.markdown("""
+<style>
+/* Chromatic Liquid Metal Badge */
+.metal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #1e222b 0%, #3e4756 35%, #181c24 70%, #2f3747 100%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.45), 0 4px 18px rgba(0, 0, 0, 0.35);
+    position: relative;
+    overflow: hidden;
+    color: #e2e8f0;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+.metal-badge::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 200%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: metal-sheen 4s infinite linear;
+}
+@keyframes metal-sheen {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(100%); }
+}
+
+/* Thinking Orb */
+.thinking-orb-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(99, 102, 241, 0.35);
+    backdrop-filter: blur(8px);
+}
+.thinking-orb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #a5b4fc, #6366f1 45%, #06b6d4 75%, #0f172a 100%);
+    box-shadow: 0 0 16px rgba(99, 102, 241, 0.85), inset 0 0 8px rgba(255, 255, 255, 0.7);
+    animation: orb-pulse 2.5s ease-in-out infinite alternate, orb-spin 8s linear infinite;
+    position: relative;
+}
+@keyframes orb-pulse {
+    0% { transform: scale(0.92); filter: hue-rotate(0deg) brightness(1); }
+    100% { transform: scale(1.1); filter: hue-rotate(45deg) brightness(1.3); }
+}
+@keyframes orb-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+""", unsafe_allow_html=True)
+
 # --- Header & Banner ---
-st.title("🚨 ResolveIQ: Autonomous SRE Incident Response Agent")
-st.markdown(
-    "**Powered by Hindsight Persistent Memory + Groq High-Speed Inference** | "
-    "*Transforming tribal knowledge & post-mortems into instant incident remediation.*"
-)
+header_col1, header_col2 = st.columns([3, 1])
+with header_col1:
+    st.title("🚨 ResolveIQ: Autonomous SRE Incident Response Agent")
+    st.markdown(
+        "**Powered by Hindsight Persistent Memory + Groq High-Speed Inference** | "
+        "*Transforming tribal knowledge & post-mortems into instant incident remediation.*"
+    )
+with header_col2:
+    st.markdown("""
+    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px; margin-top: 15px;">
+        <div class="metal-badge">✨ PRO | Hindsight Edition</div>
+        <div class="thinking-orb-wrap">
+            <div class="thinking-orb"></div>
+            <span style="font-size: 12px; color: #a5b4fc; font-weight: 500;">Hindsight: Connected</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 # --- Sidebar Configuration & System Health ---
 with st.sidebar:

@@ -1,0 +1,18 @@
+[
+  {
+    "incident_id": "INC-101",
+    "service": "payment-api",
+    "symptom": "HTTP 504 Gateway Timeout during checkout spikes",
+    "root_cause": "PostgreSQL connection pool maxed out at 50 connections due to unclosed sessions",
+    "resolution": "Increased pool limit to 250 in pgbouncer and enabled connection recycling timeout",
+    "environment": "production"
+  },
+  {
+    "incident_id": "INC-102",
+    "service": "auth-service",
+    "symptom": "HTTP 503 Service Unavailable after deployment v2.4.1",
+    "root_cause": "Missing JWT_SECRET environment variable in production Kubernetes ConfigMap",
+    "resolution": "Patched secret configuration in helm chart values and restarted auth pods",
+    "environment": "production"
+  }
+]

@@ -13,12 +13,20 @@ ENV/
 
 # Environment Variables & Secrets
 .env
-*.env.local
+.env.*
+!.env.example
+*.pem
+*.key
+*.secret
+credentials.json
+secrets.json
 
-# Streamlit
+# Streamlit Local Secrets
 .streamlit/secrets.toml
 
-# IDE & OS
+# IDE & Operating System
 .DS_Store
 .vscode/
 .idea/
+*.swp
+*.swo

@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import requests
 from dotenv import load_dotenv
@@ -17,6 +18,18 @@ HEADERS = {
 
 _bank_initialized = False
 
+# Redact potential sensitive tokens/passwords from being stored into vector memory
+SENSITIVE_PATTERNS = re.compile(
+    r'(?i)(?:api[_-]?key|secret|password|token|bearer|authorization)\s*[:=]\s*["\']?([a-zA-Z0-9_\-\.]{8,})["\']?'
+)
+
+def _sanitize_for_storage(text: str, max_length: int = 1500) -> str:
+    """Sanitizes text prior to persistent vector storage to prevent credential leakage."""
+    if not text:
+        return ""
+    truncated = text[:max_length].strip()
+    return SENSITIVE_PATTERNS.sub(r'\1: [REDACTED_SECRET]', truncated)
+
 def _ensure_bank_exists():
     """Ensures the memory bank exists on Hindsight (lazy init)."""
     global _bank_initialized
@@ -26,17 +39,21 @@ def _ensure_bank_exists():
         url = f"{HINDSIGHT_BASE_URL}/v1/default/banks/{BANK_ID}"
         requests.put(url, json={"name": "ResolveIQ Incident Bank"}, headers=HEADERS, timeout=3)
         _bank_initialized = True
-    except Exception as e:
-        # Non-blocking warning
+    except Exception:
         pass
 
 def retain_incident(service: str, symptom: str, root_cause: str, resolution: str, incident_id: str = "INC-NEW") -> dict:
-    """Stores resolved post-mortems into Hindsight memory with local backup."""
+    """Stores resolved post-mortems into Hindsight memory with local backup and credential redaction."""
     _ensure_bank_exists()
+
+    clean_service = _sanitize_for_storage(service, 60)
+    clean_symptom = _sanitize_for_storage(symptom, 500)
+    clean_root_cause = _sanitize_for_storage(root_cause, 500)
+    clean_resolution = _sanitize_for_storage(resolution, 500)
     
     text_content = (
-        f"Incident [{incident_id}]: Service '{service}' experienced '{symptom}'. "
-        f"Root Cause: '{root_cause}'. Resolution applied: '{resolution}'."
+        f"Incident [{incident_id}]: Service '{clean_service}' experienced '{clean_symptom}'. "
+        f"Root Cause: '{clean_root_cause}'. Resolution applied: '{clean_resolution}'."
     )
     
     # 1. Store to Hindsight Cloud API (with short timeout to prevent UI freezes)
@@ -44,7 +61,7 @@ def retain_incident(service: str, symptom: str, root_cause: str, resolution: str
         "items": [
             {
                 "content": text_content,
-                "context": f"{service} incident resolution {incident_id}"
+                "context": f"{clean_service} incident resolution {incident_id}"
             }
         ],
         "async": False
@@ -56,8 +73,8 @@ def retain_incident(service: str, symptom: str, root_cause: str, resolution: str
         response = requests.post(url, json=payload, headers=HEADERS, timeout=4)
         if response.status_code in [200, 201]:
             hindsight_stored = True
-    except Exception as e:
-        print(f"Hindsight retain notice: {e}")
+    except Exception:
+        pass
 
     # 2. Local persistent retention (always keep local database synchronized)
     try:
@@ -67,24 +84,26 @@ def retain_incident(service: str, symptom: str, root_cause: str, resolution: str
                 incidents = json.load(f)
         incidents.append({
             "incident_id": incident_id,
-            "service": service,
-            "symptom": symptom,
-            "root_cause": root_cause,
-            "resolution": resolution
+            "service": clean_service,
+            "symptom": clean_symptom,
+            "root_cause": clean_root_cause,
+            "resolution": clean_resolution
         })
         with open(LOCAL_DATA_FILE, "w") as f:
             json.dump(incidents, f, indent=2)
-    except Exception as e:
-        print(f"Local storage notice: {e}")
+    except Exception:
+        pass
 
     status_str = "stored_hindsight_and_local" if hindsight_stored else "stored_local_fallback"
     return {"content": text_content, "status": status_str}
 
 def recall_incidents(service: str, symptom: str, top_k: int = 3) -> list:
     """Recalls previous similar incidents and historical resolutions using Hindsight with instant local fallback."""
-    query = f"Incidents, root causes, and resolutions for {service}: {symptom}"
+    clean_service = _sanitize_for_storage(service, 60)
+    clean_symptom = _sanitize_for_storage(symptom, 500)
+    query = f"Incidents, root causes, and resolutions for {clean_service}: {clean_symptom}"
     
-    # 1. Query Hindsight Cloud API (3s timeout for responsive UX)
+    # 1. Query Hindsight Cloud API (4s timeout for responsive UX)
     try:
         url = f"{HINDSIGHT_BASE_URL}/v1/default/banks/{BANK_ID}/memories/recall"
         payload = {"query": query, "budget": "mid"}
@@ -103,8 +122,8 @@ def recall_incidents(service: str, symptom: str, top_k: int = 3) -> list:
                         "scores": item.get("scores", {})
                     })
                 return memories
-    except Exception as e:
-        print(f"Hindsight cloud recall notice (using instant local fallback): {e}")
+    except Exception:
+        pass
 
     # 2. Instant fallback to local seed post-mortems
     try:
@@ -113,8 +132,8 @@ def recall_incidents(service: str, symptom: str, top_k: int = 3) -> list:
                 incidents = json.load(f)
             
             matched = []
-            service_lower = service.lower()
-            symptom_tokens = set(symptom.lower().split())
+            service_lower = clean_service.lower()
+            symptom_tokens = set(clean_symptom.lower().split())
 
             for inc in incidents:
                 if inc.get("service", "").lower() == service_lower:
@@ -131,7 +150,7 @@ def recall_incidents(service: str, symptom: str, top_k: int = 3) -> list:
                     }
                     for inc in matched[:top_k]
                 ]
-    except Exception as e:
-        print(f"Local recall notice: {e}")
+    except Exception:
+        pass
 
     return []

@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 from agent import triage_incident
 from memory_store import retain_incident
@@ -95,6 +96,15 @@ with st.sidebar:
     st.header("⚙️ System Status")
     st.success("⚡ **Groq LLM:** Online (`qwen/qwen3.8-27b`)")
     st.success("🧠 **Hindsight Memory:** Connected (`resolveiq`)")
+    
+    with st.expander("🔐 Protected API Credentials", expanded=False):
+        st.caption("Credentials loaded securely from environment (.env). Values are masked:")
+        groq_val = os.getenv("GROQ_API_KEY", "")
+        hs_val = os.getenv("HINDSIGHT_API_KEY", "")
+        masked_groq = f"{groq_val[:4]}••••••••••••{groq_val[-4:]}" if len(groq_val) > 8 else "•" * 12
+        masked_hs = f"{hs_val[:4]}••••••••••••{hs_val[-4:]}" if len(hs_val) > 8 else "•" * 12
+        st.text_input("GROQ_API_KEY", value=masked_groq, type="password", disabled=True)
+        st.text_input("HINDSIGHT_API_KEY", value=masked_hs, type="password", disabled=True)
     
     st.divider()
     st.subheader("🧪 Hackathon Demo Controls")
@@ -260,6 +270,5 @@ with col2:
             with st.spinner("Storing post-mortem into Hindsight memory bank..."):
                 res = retain_incident(service, error_input, root_cause_input, resolution_input)
                 st.success("✅ Knowledge saved to Hindsight! The agent will use this exact fix for all future incidents.")
-                st.json(res, expanded=False)
         else:
             st.error("Please provide both root cause and resolution before saving.")

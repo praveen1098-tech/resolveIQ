@@ -93,7 +93,15 @@ Pre-load historical sample incident post-mortems into the Hindsight memory bank:
 python seed_memory.py
 ```
 
-### 5. Launch the Dashboard
+### 5. Verify Connections (Health Check)
+
+Run the diagnostic script to ensure Groq inference and Hindsight memory bank are responding:
+
+```bash
+python test_connections.py
+```
+
+### 6. Launch the Dashboard
 
 ```bash
 streamlit run app.py
@@ -101,20 +109,34 @@ streamlit run app.py
 
 Open [http://localhost:8501](http://localhost:8501) in your browser.
 
+### 7. Export Project Documentation (PDF & DOCX)
+
+Generate official hackathon overview documents:
+
+```bash
+python generate_pdf.py   # Creates ResolveIQ_Project_Overview.pdf
+python generate_doc.py   # Creates ResolveIQ_Project_Overview.docx
+```
+
 ---
 
 ## 📂 Project Structure
 
 ```
-├── app.py              # Streamlit interactive dashboard & user interface
-├── agent.py            # SRE triage agent logic and Groq prompt orchestration
-├── memory_store.py     # Hindsight Vectorize API client with local fallback
-├── seed_memory.py      # Seed script to populate initial incident post-mortems
+├── app.py                     # Streamlit interactive triage dashboard with Thinking Orb & Metal FX
+├── agent.py                   # SRE triage agent logic and Groq prompt orchestration
+├── memory_store.py            # Hindsight Vectorize API client with resilient local fallback
+├── seed_memory.py             # Seed script to populate initial incident post-mortems
+├── test_connections.py        # Connection health check diagnostic script
+├── generate_pdf.py            # Styled PDF report generator (reportlab)
+├── generate_doc.py            # Styled Word document generator (python-docx)
+├── ResolveIQ_Project_Overview.pdf   # Formatted project documentation PDF
+├── ResolveIQ_Project_Overview.docx  # Formatted project documentation Word file
 ├── data/
-│   └── seed_incidents.json # Historical incident examples
-├── requirements.txt    # Project dependencies
-├── .env.example        # Environment variable template
-└── .gitignore          # Protected files (secrets, venv, caches)
+│   └── seed_incidents.json    # Enterprise incident post-mortem database
+├── requirements.txt           # Project dependencies
+├── .env.example               # Environment variable template
+└── .gitignore                 # Protected files (secrets, venv, caches)
 ```
 
 ---

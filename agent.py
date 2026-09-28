@@ -9,15 +9,20 @@ groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 # Models available on this Groq account in priority order
 MODELS = ["qwen/qwen3.8-27b", "openai/gpt-oss-120b"]
 
-def triage_incident(service: str, error_logs: str) -> tuple[str, list]:
-    memories = recall_incidents(service, error_logs)
-    
-    if memories:
-        memory_summary = "\n".join([f"- Previous Incident: {m.get('content', str(m))}" for m in memories])
+def triage_incident(service: str, error_logs: str, use_memory: bool = True) -> tuple[str, list]:
+    """Triages production incidents using Groq LLM with optional Hindsight persistent memory."""
+    if use_memory:
+        memories = recall_incidents(service, error_logs)
+        if memories:
+            memory_summary = "\n".join([f"- Previous Incident: {m.get('content', str(m))}" for m in memories])
+        else:
+            memory_summary = "No prior incidents matching this exact symptom pattern found in memory."
     else:
-        memory_summary = "No prior incidents matching this exact symptom pattern found in memory."
+        memories = []
+        memory_summary = "MEMORY LAYER DISABLED (Simulating Stateless LLM without Hindsight)."
 
-    system_prompt = """You are ResolveIQ, an autonomous Site Reliability Engineering (SRE) agent.
+    if use_memory:
+        system_prompt = """You are ResolveIQ, an autonomous Site Reliability Engineering (SRE) agent.
 Your objective: Diagnose production incidents by synthesizing incoming alerts with past institutional memory.
 
 Rules:
@@ -27,6 +32,14 @@ Rules:
    - 🧠 Historical Memory Match (Cite past incident if present)
    - 🔍 Probable Root Cause
    - 🛠️ Recommended Action / Runbook Step
+"""
+    else:
+        system_prompt = """You are a generic AI troubleshooting assistant without access to past institutional memory or post-mortems.
+Provide general, standard troubleshooting steps for this incident without citing any specific past organizational incidents.
+Structure your response clearly:
+   - 🚨 Incident Summary
+   - 🔍 General Possibilities
+   - 🛠️ Standard Troubleshooting Steps
 """
 
     user_prompt = f"""

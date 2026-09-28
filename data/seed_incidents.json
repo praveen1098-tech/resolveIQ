@@ -2,17 +2,33 @@
   {
     "incident_id": "INC-101",
     "service": "payment-api",
-    "symptom": "HTTP 504 Gateway Timeout during checkout spikes",
-    "root_cause": "PostgreSQL connection pool maxed out at 50 connections due to unclosed sessions",
-    "resolution": "Increased pool limit to 250 in pgbouncer and enabled connection recycling timeout",
+    "symptom": "HTTP 504 Gateway Timeout during checkout spikes with db connection errors",
+    "root_cause": "PostgreSQL connection pool maxed out at 50 connections due to unclosed idle sessions in payments worker",
+    "resolution": "Increased pool limit to 250 in pgbouncer.ini and enabled connection recycling timeout idle_in_transaction_session_timeout=30s",
     "environment": "production"
   },
   {
     "incident_id": "INC-102",
     "service": "auth-service",
-    "symptom": "HTTP 503 Service Unavailable after deployment v2.4.1",
-    "root_cause": "Missing JWT_SECRET environment variable in production Kubernetes ConfigMap",
-    "resolution": "Patched secret configuration in helm chart values and restarted auth pods",
+    "symptom": "HTTP 503 Service Unavailable immediately after deployment v2.4.1",
+    "root_cause": "Missing JWT_SECRET environment variable in production Kubernetes ConfigMap values",
+    "resolution": "Patched secret configuration in helm chart values-prod.yaml and rolled out restart of auth pods (kubectl rollout restart deployment auth-service)",
+    "environment": "production"
+  },
+  {
+    "incident_id": "INC-103",
+    "service": "checkout-service",
+    "symptom": "HTTP 500 Internal Server Error & Redis OOM command rejected during flash sale",
+    "root_cause": "Redis cache stampede: Un-cached product SKU queries flooded master Redis replica without probabilistic early expiration (XFetch)",
+    "resolution": "Enabled Redis maxmemory-policy allkeys-lru, scaled Redis read-replicas from 2 to 6, and deployed probabilistic early re-computation cache wrapper",
+    "environment": "production"
+  },
+  {
+    "incident_id": "INC-104",
+    "service": "notification-worker",
+    "symptom": "High consumer lag (50k+ events) and Kafka rebalance storm causing delayed order emails",
+    "root_cause": "max.poll.interval.ms set too low (30s) while PDF generation batch takes 45s, causing broker to evict workers as dead nodes",
+    "resolution": "Bumped max.poll.interval.ms to 300000ms (5 min) and offloaded PDF generation to an async Celery worker pool",
     "environment": "production"
   }
 ]

@@ -7,6 +7,26 @@ st.set_page_config(page_title="ResolveIQ - Incident Memory Agent", layout="wide"
 st.title("🚨 ResolveIQ: AI Incident Response & Root-Cause Memory Agent")
 st.caption("Autonomous SRE agent powered by Hindsight persistent memory.")
 
+with st.sidebar:
+    st.header("⚙️ System Status")
+    st.success("⚡ **Groq LLM:** Online (`qwen/qwen3.8-27b`)")
+    st.success("🧠 **Hindsight Memory:** Connected (`resolveiq`)")
+    
+    st.divider()
+    st.subheader("🛠️ Quick Tools")
+    if st.button("🌱 Reseed Hindsight Memories"):
+        with st.spinner("Pushing sample incidents to Hindsight..."):
+            from seed_memory import load_seeds
+            load_seeds()
+            st.success("✅ Seed post-mortems reloaded!")
+
+    st.markdown("---")
+    st.markdown(
+        "**Documentation & Repos:**\n"
+        "- [GitHub Repo](https://github.com/praveen1098-tech/resolveIQ)\n"
+        "- [Hindsight Dashboard](https://ui.hindsight.vectorize.io/banks/resolveiq)"
+    )
+
 col1, col2 = st.columns([3, 2])
 
 with col1:

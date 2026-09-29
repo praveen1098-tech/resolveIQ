@@ -12,7 +12,7 @@ MODELS = ["qwen/qwen3.8-27b", "openai/gpt-oss-120b"]
 
 # Regex pattern for sanitizing potential sensitive secrets from logs/inputs
 SENSITIVE_PATTERNS = re.compile(
-    r'(?i)(?:api[_-]?key|secret|password|token|bearer|authorization)\s*[:=]\s*["\']?([a-zA-Z0-9_\-\.]{8,})["\']?'
+    r'(?i)((?:api[_-]?key|password|token|secret|authorization|bearer)\s*[:=]\s*["\']?|\bbearer\s+["\']?)[a-zA-Z0-9_\-\.]{6,}(["\']?)'
 )
 
 def _sanitize_input(text: str, max_chars: int = 3000) -> str:
@@ -22,7 +22,7 @@ def _sanitize_input(text: str, max_chars: int = 3000) -> str:
     # Cap character length to prevent token exhaustion / denial of service
     truncated = text[:max_chars].strip()
     # Mask any potential API keys, passwords, or tokens in logs
-    sanitized = SENSITIVE_PATTERNS.sub(r'\1: [REDACTED_SECRET]', truncated)
+    sanitized = SENSITIVE_PATTERNS.sub(r'\1[REDACTED_SECRET]\2', truncated)
     return sanitized
 
 def triage_incident(service: str, error_logs: str, use_memory: bool = True) -> tuple[str, list]:

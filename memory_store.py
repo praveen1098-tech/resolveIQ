@@ -20,7 +20,7 @@ _bank_initialized = False
 
 # Redact potential sensitive tokens/passwords from being stored into vector memory
 SENSITIVE_PATTERNS = re.compile(
-    r'(?i)(?:api[_-]?key|secret|password|token|bearer|authorization)\s*[:=]\s*["\']?([a-zA-Z0-9_\-\.]{8,})["\']?'
+    r'(?i)((?:api[_-]?key|password|token|secret|authorization|bearer)\s*[:=]\s*["\']?|\bbearer\s+["\']?)[a-zA-Z0-9_\-\.]{6,}(["\']?)'
 )
 
 def _sanitize_for_storage(text: str, max_length: int = 1500) -> str:
@@ -28,7 +28,7 @@ def _sanitize_for_storage(text: str, max_length: int = 1500) -> str:
     if not text:
         return ""
     truncated = text[:max_length].strip()
-    return SENSITIVE_PATTERNS.sub(r'\1: [REDACTED_SECRET]', truncated)
+    return SENSITIVE_PATTERNS.sub(r'\1[REDACTED_SECRET]\2', truncated)
 
 def _ensure_bank_exists():
     """Ensures the memory bank exists on Hindsight (lazy init)."""

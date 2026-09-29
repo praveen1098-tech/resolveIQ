@@ -109,7 +109,25 @@ streamlit run app.py
 
 Open [http://localhost:8501](http://localhost:8501) in your browser.
 
-### 7. Export Project Documentation (PDF & DOCX)
+#### 👥 Demo Operator Accounts (Pre-configured)
+
+| Role | Username | Password | Capabilities |
+| :--- | :--- | :--- | :--- |
+| **🛡️ Platform Admin** | `admin` | `Admin@ResolveIQ2026!` | Full access: Triage, Reseed, Teach, User Directory, Security Console |
+| **⚡ Lead SRE** | `sre_lead` | `SRE@ResolveIQ2026!` | Operational access: Triage incidents, Store fixes, Recall memories |
+| **👁️ Compliance Auditor** | `auditor` | `Audit@ResolveIQ2026!` | Read-only access: Memory Inspector, Historical post-mortems |
+
+*(Tip: You can also use the one-click demo login buttons directly on the sign-in screen.)*
+
+### 7. Run Automated Security Verification Suite
+
+Verify all 12 cryptographic, RBAC, session, and input security controls:
+
+```bash
+python test_security.py
+```
+
+### 8. Export Project Documentation (PDF & DOCX)
 
 Generate official hackathon overview documents:
 
@@ -124,19 +142,25 @@ python generate_doc.py   # Creates ResolveIQ_Project_Overview.docx
 
 ```
 ├── app.py                     # Streamlit interactive triage dashboard with Thinking Orb & Metal FX
+├── auth.py                    # Enterprise security engine (Bcrypt, HMAC sessions, RBAC, lockout)
 ├── agent.py                   # SRE triage agent logic and Groq prompt orchestration
 ├── memory_store.py            # Hindsight Vectorize API client with resilient local fallback
 ├── seed_memory.py             # Seed script to populate initial incident post-mortems
 ├── test_connections.py        # Connection health check diagnostic script
+├── test_security.py           # 12-point automated enterprise security verification suite
 ├── generate_pdf.py            # Styled PDF report generator (reportlab)
 ├── generate_doc.py            # Styled Word document generator (python-docx)
 ├── ResolveIQ_Project_Overview.pdf   # Formatted project documentation PDF
 ├── ResolveIQ_Project_Overview.docx  # Formatted project documentation Word file
 ├── data/
-│   └── seed_incidents.json    # Enterprise incident post-mortem database
+│   ├── seed_incidents.json    # Enterprise incident post-mortem database
+│   ├── users.json             # Salted & hashed user database (git-ignored)
+│   ├── sessions.json          # Active cryptographic sessions (git-ignored)
+│   └── audit_log.json         # Real-time security audit log (git-ignored)
 ├── requirements.txt           # Project dependencies
+├── SECURITY.md                # Full enterprise security compliance specification
 ├── .env.example               # Environment variable template
-└── .gitignore                 # Protected files (secrets, venv, caches)
+└── .gitignore                 # Protected files (secrets, venv, caches, user databases)
 ```
 
 ---

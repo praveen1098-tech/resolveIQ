@@ -21,6 +21,16 @@ ENV/
 credentials.json
 secrets.json
 
+# Local User Database & Audit Logs (RBAC / Auth Data)
+data/users.json
+data/sessions.json
+data/audit_log.json
+data/reset_tokens.json
+data/backups/
+data/*.tmp
+
+
+
 # Streamlit Local Secrets
 .streamlit/secrets.toml
 

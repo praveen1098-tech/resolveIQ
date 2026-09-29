@@ -83,63 +83,153 @@ st.markdown("""
     margin-top: 4px;
 }
 
-/* Top Command Bar */
+/* ============================================================
+   TOP COMMAND BAR - HIGHLIGHTED CYBERPUNK HEADER BANNER
+   ============================================================ */
 .top-command-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #111827;
-    border: 1px solid rgba(99, 102, 241, 0.25);
-    border-radius: 14px;
-    padding: 12px 24px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(17, 24, 39, 0.98) 50%, rgba(30, 27, 75, 0.95) 100%);
+    border: 1.5px solid rgba(56, 189, 248, 0.5);
+    border-radius: 16px;
+    padding: 16px 26px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 25px rgba(56, 189, 248, 0.25), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+    position: relative;
+    overflow: hidden;
 }
-.cmd-title {
-    font-size: 18px;
-    font-weight: 800;
-    background: linear-gradient(90deg, #38bdf8, #818cf8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: 0.5px;
+.top-command-bar::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #06b6d4 0%, #38bdf8 30%, #818cf8 70%, #c084fc 100%);
+    box-shadow: 0 0 14px #38bdf8;
+}
+
+.cmd-title-wrapper {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 14px;
 }
+
+.cmd-title-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(90deg, rgba(6, 182, 212, 0.16) 0%, rgba(99, 102, 241, 0.22) 100%);
+    border: 1.5px solid rgba(56, 189, 248, 0.65);
+    border-radius: 12px;
+    padding: 8px 20px;
+    box-shadow: 0 0 22px rgba(56, 189, 248, 0.4), inset 0 0 14px rgba(99, 102, 241, 0.25);
+}
+
+.cmd-title-prefix {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, #38bdf8 0%, #67e8f9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 18px rgba(56, 189, 248, 0.5);
+}
+
+.cmd-title-divider {
+    font-size: 20px;
+    font-weight: 900;
+    color: #818cf8;
+    text-shadow: 0 0 10px rgba(129, 140, 248, 0.8);
+}
+
+.cmd-title-main {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    background: linear-gradient(90deg, #ffffff 0%, #cbd5e1 50%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.top-command-right {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
 .health-pill {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(16, 185, 129, 0.15);
-    border: 1px solid rgba(16, 185, 129, 0.4);
+    background: rgba(16, 185, 129, 0.2);
+    border: 1.5px solid rgba(16, 185, 129, 0.6);
     color: #34d399;
-    padding: 4px 12px;
+    padding: 6px 14px;
     border-radius: 9999px;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.35);
 }
 
-/* Thinking Orb */
 .thinking-orb-wrap {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 5px 12px;
+    gap: 8px;
+    padding: 6px 14px;
     border-radius: 9999px;
-    background: rgba(15, 23, 42, 0.8);
-    border: 1px solid rgba(99, 102, 241, 0.35);
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
 }
-.thinking-orb {
-    width: 18px;
-    height: 18px;
+
+.operator-badge {
+    font-size: 12px;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 9999px;
+    padding: 6px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.role-tag {
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(99, 102, 241, 0.25);
+    color: #a5b4fc;
+    border: 1px solid rgba(99, 102, 241, 0.45);
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #a5b4fc, #6366f1 45%, #06b6d4 75%, #0f172a 100%);
-    box-shadow: 0 0 14px rgba(99, 102, 241, 0.85);
-    animation: orb-pulse 2.5s ease-in-out infinite alternate;
+    background: #38bdf8;
+    box-shadow: 0 0 8px #38bdf8;
+    display: inline-block;
+    animation: dot-pulse 1.8s infinite;
+}
+@keyframes dot-pulse {
+    0% { transform: scale(0.9); opacity: 0.7; }
+    50% { transform: scale(1.3); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+.thinking-orb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #67e8f9, #38bdf8 30%, #6366f1 65%, #0f172a 100%);
+    box-shadow: 0 0 18px rgba(56, 189, 248, 0.95), 0 0 30px rgba(99, 102, 241, 0.65);
+    animation: orb-pulse 2.2s ease-in-out infinite alternate;
 }
 @keyframes orb-pulse {
     0% { transform: scale(0.92); filter: brightness(1); }
-    100% { transform: scale(1.1); filter: brightness(1.3); }
+    100% { transform: scale(1.15); filter: brightness(1.4); }
 }
 
 /* Agent & Security Status Badges */
@@ -364,17 +454,24 @@ if not current_user:
 # ============================================================
 st.markdown(f"""
 <div class="top-command-bar">
-    <div class="cmd-title">
+    <div class="cmd-title-wrapper">
         <div class="thinking-orb"></div>
-        <span>RESOLVEIQ // AI COMMAND CENTER</span>
+        <div class="cmd-title-badge">
+            <span class="cmd-title-prefix">RESOLVEIQ</span>
+            <span class="cmd-title-divider">//</span>
+            <span class="cmd-title-main">AI COMMAND CENTER</span>
+        </div>
     </div>
-    <div style="display: flex; gap: 14px; align-items: center;">
+    <div class="top-command-right">
         <span class="health-pill">● SYSTEM HEALTHY</span>
         <div class="thinking-orb-wrap">
-            <span style="font-size: 12px; color: #a5b4fc; font-weight: 600;">Hindsight Vector Bank: Online</span>
+            <span class="pulse-dot"></span>
+            <span style="font-size: 12px; color: #38bdf8; font-weight: 700;">Hindsight Vector Bank: Online</span>
         </div>
-        <div style="font-size: 12px; color: #94a3b8;">
-            Operator: <strong style="color: #f1f5f9;">{current_user.get('full_name')}</strong> ({ROLE_LABELS.get(current_user.get('role'))})
+        <div class="operator-badge">
+            <span style="color: #94a3b8;">Operator:</span>
+            <strong style="color: #f8fafc;">{current_user.get('full_name')}</strong>
+            <span class="role-tag">{ROLE_LABELS.get(current_user.get('role'))}</span>
         </div>
     </div>
 </div>

@@ -633,7 +633,7 @@ def render_login_page():
         <div class="auth-header">
             <div style="display:flex; justify-content:center; align-items:center; gap:12px; margin-bottom:12px;">
                 <div class="thinking-orb"></div>
-                <span class="auth-title">ResolveIQ</span>
+                <span class="auth-title">Resolve <span style="background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 16px rgba(56, 189, 248, 0.6);">IQ</span></span>
             </div>
             <div class="auth-subtitle">
                 Autonomous SRE Incident Response & Institutional Memory Platform<br>

@@ -25,7 +25,7 @@ import backup
 load_dotenv()
 
 st.set_page_config(
-    page_title="ResolveIQ - AI Command Center",
+    page_title="Resolve IQ - AI Command Center",
     layout="wide",
     page_icon="🚨",
     initial_sidebar_state="expanded"
@@ -132,6 +132,16 @@ st.markdown("""
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 18px rgba(56, 189, 248, 0.5);
+}
+
+.cmd-title-iq {
+    display: inline-block;
+    background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(56, 189, 248, 0.8);
+    font-weight: 900;
+    margin-left: 2px;
 }
 
 .cmd-title-divider {
@@ -457,7 +467,7 @@ st.markdown(f"""
     <div class="cmd-title-wrapper">
         <div class="thinking-orb"></div>
         <div class="cmd-title-badge">
-            <span class="cmd-title-prefix">RESOLVEIQ</span>
+            <span class="cmd-title-prefix">RESOLVE <span class="cmd-title-iq">IQ</span></span>
             <span class="cmd-title-divider">//</span>
             <span class="cmd-title-main">AI COMMAND CENTER</span>
         </div>
@@ -481,6 +491,17 @@ st.markdown(f"""
 # SIDEBAR NAVIGATION & HEALTH
 # ============================================================
 with st.sidebar:
+    st.markdown("""
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px; padding: 12px 16px; background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(30, 41, 59, 0.9)); border: 1.5px solid rgba(56, 189, 248, 0.35); border-radius: 14px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);">
+        <div style="font-size: 24px;">🚨</div>
+        <div>
+            <div style="font-size: 17px; font-weight: 900; letter-spacing: 0.5px; color: #f8fafc;">
+                Resolve <span style="color: #38bdf8; text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);">IQ</span>
+            </div>
+            <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px;">Autonomous SRE Memory</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
     st.markdown("### 🎛️ Navigation")
     nav_selection = st.radio(
         "Module",
